@@ -37,3 +37,8 @@ App: `theo-twitter-emojis`
 
 **👉 axiom**  
 Connect with Github  
+
+**👉 upstash**  
+https://console.upstash.com/  
+Connect with Github  
+Database: `theo-twitter-emojis-ratelimiter`
