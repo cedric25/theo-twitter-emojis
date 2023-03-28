@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { api, type RouterOutputs } from "~/utils/api";
 import { LoadingPage, LoadingSpinner } from "~/components/loading";
+import { PageLayout } from "~/components/layout";
 
 dayjs.extend(relativeTime);
 
@@ -130,27 +131,23 @@ const Home: NextPage = () => {
   if (!userLoaded) return <div />;
 
   return (
-    <>
-      <main className="flex h-screen justify-center">
-        <div className="w-full border-x border-slate-400 md:max-w-2xl">
-          <div className="felx border-b border-slate-200 p-4">
-            {!isSignedIn && (
-              <div className="flex justify-center">
-                <SignInButton />
-              </div>
-            )}
-            {isSignedIn && (
-              <div>
-                <CreatePostWizard />
-                <SignOutButton />
-              </div>
-            )}
+    <PageLayout>
+      <div className="flex border-b border-slate-200 p-4">
+        {!isSignedIn && (
+          <div className="flex justify-center">
+            <SignInButton />
           </div>
+        )}
+        {isSignedIn && (
+          <div>
+            <CreatePostWizard />
+            <SignOutButton />
+          </div>
+        )}
+      </div>
 
-          <Feed />
-        </div>
-      </main>
-    </>
+      <Feed />
+    </PageLayout>
   );
 };
 
