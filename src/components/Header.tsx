@@ -1,9 +1,4 @@
-import {
-  SignInButton,
-  SignOutButton,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { CreatePostForm } from "~/components/CreatePostForm";
 
 export const Header = () => {
@@ -29,9 +24,6 @@ export const Header = () => {
             }}
           />
           <CreatePostForm />
-          <div className="ml-8 flex">
-            <SignOutButton />
-          </div>
         </div>
       )}
     </div>
