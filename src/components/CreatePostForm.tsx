@@ -1,23 +1,31 @@
 import { useUser } from "@clerk/nextjs";
-import { useState } from "react";
 import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "~/components/loading";
 
 export const CreatePostForm = () => {
   const { user } = useUser();
 
-  // "This is awful, don't use state for this"
-  // A better way would be to use https://react-hook-form.com/ here
-  // Able to share the validator on the frontend and the backend?
-  const [input, setInput] = useState("");
-
   const ctx = api.useContext();
+
+  type Inputs = {
+    chirpInput: string;
+  };
+
+  const { register, handleSubmit, watch, reset } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    mutate({ content: data.chirpInput });
+  };
+
+  const showSubmitButton = watch("chirpInput");
 
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: () => {
-      setInput("");
+      reset({ chirpInput: "" });
       void ctx.posts.getAll.invalidate();
+      // chirpInputRef.current.focus();
     },
     onError: (err) => {
       const errorMessage = err.data?.zodError?.fieldErrors.content;
@@ -26,31 +34,25 @@ export const CreatePostForm = () => {
       } else {
         toast.error("Failed to post! Please try again later.");
       }
+      // chirpInputRef.current.focus();
     },
   });
 
   if (!user) return null;
 
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex w-full">
       <input
+        type="text"
         placeholder="Type some emojis!"
         className="grow bg-transparent pl-2 outline-none"
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            if (input !== "") {
-              mutate({ content: input });
-            }
-          }
-        }}
+        defaultValue=""
+        {...register("chirpInput")}
         disabled={isPosting}
+        autoFocus
       />
-      {input !== "" && !isPosting && (
-        <button onClick={() => mutate({ content: input })} disabled={isPosting}>
+      {showSubmitButton && !isPosting && (
+        <button type="submit" disabled={isPosting}>
           Post
         </button>
       )}
@@ -59,6 +61,6 @@ export const CreatePostForm = () => {
           <LoadingSpinner size={20} />
         </div>
       )}
-    </>
+    </form>
   );
 };
