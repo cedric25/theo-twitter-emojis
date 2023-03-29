@@ -12,9 +12,10 @@ import {
 import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 
 const addUserDataToPosts = async (posts: Post[]) => {
+  const userId = posts.map((post) => post.authorId);
   const users = (
     await clerkClient.users.getUserList({
-      userId: posts.map((post) => post.authorId),
+      userId,
       limit: 100,
     })
   ).map(filterUserForClient);
@@ -22,10 +23,10 @@ const addUserDataToPosts = async (posts: Post[]) => {
   return posts.map((post) => {
     const author = users.find((user) => user.id === post.authorId);
 
-    if (!author || !author.username) {
+    if (!author) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Author for post not found",
+        message: `Author for post not found. POST ID: ${post.id}, USER ID: ${post.authorId}`,
       });
     }
 
@@ -34,7 +35,7 @@ const addUserDataToPosts = async (posts: Post[]) => {
       // Just to help TypeScript...
       author: {
         ...author,
-        username: author.username,
+        username: author.username ?? "(no username)",
       },
     };
   });
