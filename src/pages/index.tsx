@@ -11,7 +11,9 @@ import { PostView } from "~/components/postview";
 const CreatePostWizard = () => {
   const { user } = useUser();
 
+  // "This is awful, don't use state for this"
   // A better way would be to use https://react-hook-form.com/ here
+  // Able to share the validator on the frontend and the backend?
   const [input, setInput] = useState("");
 
   const ctx = api.useContext();

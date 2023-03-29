@@ -42,3 +42,8 @@ Connect with Github
 https://console.upstash.com/  
 Connect with Github  
 Database: `theo-twitter-emojis-ratelimiter`
+
+## TODO
+
+Synchronize the database with Clerk, this way no need to call Clerk to get user's info?  
+Clerk working on ways to do that? Something easier than listening on to webhooks?
